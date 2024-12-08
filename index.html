@@ -1,0 +1,210 @@
+project/
+│
+├── index.html
+├── styles.css
+├── script.js
+└── data/
+    ├── products-en.json
+    └── products-ar.json
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retouch Cosmetics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1 id="title">Retouch Cosmetics</h1>
+    <nav>
+      <ul>
+        <li><a href="#home" data-lang="home">Home</a></li>
+        <li><a href="#about" data-lang="about">About</a></li>
+        <li><a href="#products" data-lang="products">Products</a></li>
+        <li><a href="#contact" data-lang="contact">Contact</a></li>
+      </ul>
+      <select id="language-switcher">
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
+      </select>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="content">
+    <section id="home">
+      <h2 data-lang="welcome">Welcome to Retouch</h2>
+      <p data-lang="home-description">Your trusted partner in skin and hair care.</p>
+    </section>
+    
+    <section id="about">
+      <h2 data-lang="about-title">About Us</h2>
+      <p data-lang="about-description">We specialize in custom formulations and cosmetic products tailored to your needs.</p>
+    </section>
+    
+    <section id="products">
+      <h2 data-lang="products-title">Our Products</h2>
+      <div id="product-list"></div>
+    </section>
+    
+    <section id="contact">
+      <h2 data-lang="contact-title">Contact Us</h2>
+      <form id="contact-form">
+        <label data-lang="name">Name:</label>
+        <input type="text" id="name" required>
+        <label data-lang="email">Email:</label>
+        <input type="email" id="email" required>
+        <label data-lang="message">Message:</label>
+        <textarea id="message" required></textarea>
+        <button type="submit" data-lang="send">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p data-lang="footer">© 2024 Retouch Cosmetics. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+}
+
+nav ul li {
+  margin: 0 1rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#language-switcher {
+  margin-left: 1rem;
+}
+
+main {
+  padding: 2rem;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #333;
+  color: #fff;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+#product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#product-list div {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  flex: 1 1 calc(33.333% - 2rem);
+  box-sizing: border-box;
+}
+
+#contact-form {
+  max-width: 600px;
+  margin: auto;
+}
+const langData = {
+  en: {
+    home: "Home",
+    about: "About",
+    products: "Products",
+    contact: "Contact",
+    welcome: "Welcome to Retouch",
+    "home-description": "Your trusted partner in skin and hair care.",
+    "about-title": "About Us",
+    "about-description": "We specialize in custom formulations and cosmetic products tailored to your needs.",
+    "products-title": "Our Products",
+    "contact-title": "Contact Us",
+    name: "Name:",
+    email: "Email:",
+    message: "Message:",
+    send: "Send",
+    footer: "© 2024 Retouch Cosmetics. All rights reserved.",
+  },
+  ar: {
+    home: "الرئيسية",
+    about: "من نحن",
+    products: "المنتجات",
+    contact: "تواصل معنا",
+    welcome: "مرحبًا بكم في ريتاتش",
+    "home-description": "شريكك الموثوق في العناية بالبشرة والشعر.",
+    "about-title": "من نحن",
+    "about-description": "نحن متخصصون في التركيبات المخصصة ومنتجات التجميل حسب احتياجاتك.",
+    "products-title": "منتجاتنا",
+    "contact-title": "تواصل معنا",
+    name: "الاسم:",
+    email: "البريد الإلكتروني:",
+    message: "الرسالة:",
+    send: "إرسال",
+    footer: "© 2024 ريتاتش. جميع الحقوق محفوظة.",
+  },
+};
+
+document.getElementById("language-switcher").addEventListener("change", (e) => {
+  const lang = e.target.value;
+  document.querySelectorAll("[data-lang]").forEach((el) => {
+    const key = el.dataset.lang;
+    el.textContent = langData[lang][key];
+  });
+  fetchProducts(lang);
+});
+
+async function fetchProducts(lang) {
+  const response = await fetch(`data/products-${lang}.json`);
+  const products = await response.json();
+  const productList = document.getElementById("product-list");
+  productList.innerHTML = "";
+  products.forEach((product) => {
+    const productDiv = document.createElement("div");
+    productDiv.innerHTML = `<h3>${product.name}</h3><p>${product.description}</p>`;
+    productList.appendChild(productDiv);
+  });
+}
+
+// Initial load
+fetchProducts("en");
+[
+  { "name": "Hydrating Cream", "description": "Keeps your skin moisturized all day." },
+  { "name": "Hair Serum", "description": "Strengthens hair and reduces breakage." }
+]
+[
+  { "name": "كريم الترطيب", "description": "يحافظ على ترطيب بشرتك طوال اليوم." },
+  { "name": "سيروم الشعر", "description": "يقوي الشعر ويقلل التكسر." }
+]
